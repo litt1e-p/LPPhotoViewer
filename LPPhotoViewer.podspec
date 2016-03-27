@@ -12,5 +12,7 @@ Pod::Spec.new do |s|
   s.platform = :ios, '7.0'
   s.requires_arc = true
   s.source_files = 'LPPhotoViewer/*'
+  s.dependency'SDWebImage', '~> 3.7.5'
+  s.dependency'MBProgressHUD', '~> 0.9.2'
   s.frameworks = 'Foundation', 'UIKit'
 end
