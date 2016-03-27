@@ -73,7 +73,7 @@
     self.indicatorLabel                 = [[UILabel alloc] initWithFrame:CGRectMake(screen_width / 2 - 20, 44, 60, 30)];
     self.indicatorLabel.backgroundColor = [UIColor clearColor];
     self.indicatorLabel.textColor       = [UIColor whiteColor];
-    self.indicatorLabel.text            = [NSString stringWithFormat:@"%ld/%lu",self.currentIndex + 1,(unsigned long)self.imgArr.count];
+    self.indicatorLabel.text            = [NSString stringWithFormat:@"%lu/%lu", (unsigned long)self.currentIndex + 1, (unsigned long)self.imgArr.count];
     [self.view addSubview:self.indicatorLabel];
 }
 
@@ -127,10 +127,10 @@
 #pragma mark - UIScrollViewDelegate
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
-    int i = scrollView.contentOffset.x/screen_width + 1;
+    NSInteger i = scrollView.contentOffset.x/screen_width + 1;
     if(i >= 1){
         [self loadPhotoWithIndex:i - 1];
-        self.indicatorLabel.text = [NSString stringWithFormat:@"%d/%lu", i, (unsigned long)self.imgArr.count];
+        self.indicatorLabel.text = [NSString stringWithFormat:@"%lu/%lu", (unsigned long)i, (unsigned long)self.imgArr.count];
         self.descLabel.text = self.imageNameArray[i - 1];
     }
 }
