@@ -13,7 +13,6 @@
 
 @property (nonatomic, strong) NSMutableArray *urlArrays;
 @property (nonatomic, strong) NSMutableArray *imgArrays;
-@property (nonatomic, strong) NSMutableArray *imageNames;
 
 @end
 
@@ -24,16 +23,14 @@
     [super viewDidLoad];
     self.urlArrays  = [[NSMutableArray alloc] init];
     self.imgArrays  = [[NSMutableArray alloc] init];
-    self.imageNames = [[NSMutableArray alloc] init];
-    [self.urlArrays addObject:@"https://d13yacurqjgara.cloudfront.net/users/3460/screenshots/1667332/pickle.png"];
-    [self.urlArrays addObject:@"https://d13yacurqjgara.cloudfront.net/users/610286/screenshots/2012918/eggplant.png"];
-    [self.urlArrays addObject:@"https://d13yacurqjgara.cloudfront.net/users/514774/screenshots/1985501/ill_2-01.png"];
+    [self.urlArrays addObject:@"https://drscdn.500px.org/photo/42393810/q=80_m=2000/fed5ccbf106c289f62e5762df92f1438"];
+    [self.urlArrays addObject:@"https://drscdn.500px.org/photo/146441995/q=80_m=2000/0a6e687c0750ea05abf709bbd8c3d7f8"];
+    [self.urlArrays addObject:@"https://drscdn.500px.org/photo/146512755/q=80_m=2000_k=1/62c584ed280fb11bbdb7d1c5451b6676"];
+    [self.urlArrays addObject:@"https://drscdn.500px.org/photo/146409463/q=80_m=2000/9658bd373b7f84799dda05253d404a5d"];
+    
     [self.imgArrays addObject:[UIImage imageNamed:@"carousel01"]];
     [self.imgArrays addObject:[UIImage imageNamed:@"carousel02"]];
     [self.imgArrays addObject:[UIImage imageNamed:@"carousel03"]];
-    [self.imageNames addObject:@"I am image1"];
-    [self.imageNames addObject:@"I am image2"];
-    [self.imageNames addObject:@"I am image3"];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
@@ -43,7 +40,7 @@
 
 - (void)showPhotoBrowser:(NSInteger)index
 {
-    LPPhotoViewer *pvc = [[LPPhotoViewer alloc]init];
+    LPPhotoViewer *pvc = [[LPPhotoViewer alloc] init];
     
     pvc.currentIndex = index;
     
@@ -51,8 +48,9 @@
 //    pvc.imgArr = self.imgArrays;
     //image url type
     pvc.imgArr         = self.urlArrays;
-    
-    pvc.imageNameArray = self.imageNames;
+//    pvc.indicatorType = IndicatorTypePageControl;
+//    pvc.indicatorType = IndicatorTypeNumLabel;
+//    pvc.indicatorType = IndicatorTypeNone;
     [self presentViewController:pvc animated:YES completion:nil];
 }
 

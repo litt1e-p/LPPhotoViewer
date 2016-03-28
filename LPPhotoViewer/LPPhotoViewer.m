@@ -16,9 +16,14 @@
     CGFloat lastScale;
     MBProgressHUD *HUD;
     NSMutableArray *_subViewList;
-    CGFloat screen_width;
-    CGFloat screen_height;
+    CGFloat kScreenWidth;
+    CGFloat kScreenHeight;
 }
+
+@property(nonatomic, strong) UIScrollView *scrollView;
+@property(nonatomic, strong) UILabel *indicatorLabel;
+@property(nonatomic, strong) UIPageControl *pageControl;
+
 @end
 
 @implementation LPPhotoViewer
@@ -37,22 +42,25 @@
     [super viewDidLoad];
     lastScale                 = 1.0;
     self.view.backgroundColor = [UIColor blackColor];
-    screen_height             = [UIScreen mainScreen].bounds.size.height;
-    screen_width              = [UIScreen mainScreen].bounds.size.width;
+    kScreenHeight             = [UIScreen mainScreen].bounds.size.height;
+    kScreenWidth              = [UIScreen mainScreen].bounds.size.width;
     
     [self initScrollView];
-    [self addLabel];
-    [self addImgDescLabel];
+    if (self.indicatorType == IndicatorTypeNumLabel) {
+        [self addLabel];
+    } else if (self.indicatorType == IndicatorTypePageControl) {
+        [self addPageControl];
+    }
     [self setPicCurrentIndex:self.currentIndex];
 }
 
 - (void)initScrollView
 {
-    self.scrollView                                = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, screen_width, screen_height)];
+    self.scrollView                                = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight)];
     self.scrollView.pagingEnabled                  = YES;
     self.scrollView.userInteractionEnabled         = YES;
     self.scrollView.showsHorizontalScrollIndicator = NO;
-    self.scrollView.contentSize                    = CGSizeMake(self.imgArr.count * screen_width, screen_height);
+    self.scrollView.contentSize                    = CGSizeMake(self.imgArr.count * kScreenWidth, kScreenHeight);
     self.scrollView.delegate                       = self;
     self.scrollView.contentOffset                  = CGPointMake(0, 0);
     self.scrollView.minimumZoomScale               = 1;
@@ -62,34 +70,36 @@
     for (int i = 0; i < self.imgArr.count; i++) {
         [_subViewList addObject:[NSNull class]];
     }
-    
-    for (int i = 0; i < self.imageNameArray.count; i++) {
-        [_subViewList addObject:[NSNull class]];
-    }
 }
 
 - (void)addLabel
 {
-    self.indicatorLabel                 = [[UILabel alloc] initWithFrame:CGRectMake(screen_width / 2 - 20, 44, 60, 30)];
-    self.indicatorLabel.backgroundColor = [UIColor clearColor];
-    self.indicatorLabel.textColor       = [UIColor whiteColor];
-    self.indicatorLabel.text            = [NSString stringWithFormat:@"%ld/%lu",self.currentIndex + 1,(unsigned long)self.imgArr.count];
-    [self.view addSubview:self.indicatorLabel];
+    UILabel *indicatorLabel        = [[UILabel alloc] initWithFrame:CGRectMake(0, kScreenHeight - 30, kScreenWidth, 30)];
+    indicatorLabel.backgroundColor = [UIColor clearColor];
+    indicatorLabel.textColor       = [UIColor whiteColor];
+    indicatorLabel.textAlignment   = NSTextAlignmentCenter;
+    indicatorLabel.text            = [NSString stringWithFormat:@"%ld/%lu", self.currentIndex + 1, (unsigned long)self.imgArr.count];
+    [self.view addSubview:indicatorLabel];
+    self.indicatorLabel            = indicatorLabel;
 }
 
-- (void)addImgDescLabel
+- (void)addPageControl
 {
-    self.descLabel                 = [[UILabel alloc] initWithFrame:CGRectMake(screen_width / 2 - 40, screen_height / 2 + 240, 200, 60)];
-    self.descLabel.backgroundColor = [UIColor clearColor];
-    self.descLabel.textColor       = [UIColor whiteColor];
-    self.descLabel.text            = self.imageNameArray.count > 0 ? self.imageNameArray[self.currentIndex] : @"";
-    [self.view addSubview:self.descLabel];
+    if (self.imgArr.count <= 0) {
+        return;
+    }
+    UIPageControl *pc = [[UIPageControl alloc] init];
+    pc.numberOfPages  = self.imgArr.count;
+    CGSize size       = [pc sizeForNumberOfPages:self.imgArr.count];
+    pc.frame          = CGRectMake(kScreenWidth / 2 - size.width / 2, kScreenHeight - size.height, size.width, size.height);
+    [self.view addSubview:pc];
+    self.pageControl  = pc;
 }
 
 - (void)setPicCurrentIndex:(NSInteger)currentIndex
 {
     _currentIndex                 = currentIndex;
-    self.scrollView.contentOffset = CGPointMake(screen_width * currentIndex, 0);
+    self.scrollView.contentOffset = CGPointMake(kScreenWidth * currentIndex, 0);
     [self loadPhotoWithIndex:_currentIndex];
     [self loadPhotoWithIndex:_currentIndex + 1];
     [self loadPhotoWithIndex:_currentIndex - 1];
@@ -116,6 +126,13 @@
             [_subViewList replaceObjectAtIndex:index withObject:photoV];
         }
     }
+    [self.scrollView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:[LPPhotoView class]]) {
+            LPPhotoView *photoView = obj;
+            [photoView zoomReset];
+        }
+    }];
+    
 }
 
 #pragma mark - PhotoViewDelegate
@@ -125,13 +142,16 @@
 }
 
 #pragma mark - UIScrollViewDelegate
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    
-    int i = scrollView.contentOffset.x/screen_width + 1;
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    int i = scrollView.contentOffset.x / kScreenWidth + 1;
     if(i >= 1){
         [self loadPhotoWithIndex:i - 1];
-        self.indicatorLabel.text = [NSString stringWithFormat:@"%d/%lu", i, (unsigned long)self.imgArr.count];
-        self.descLabel.text = self.imageNameArray[i - 1];
+        if (self.indicatorType == IndicatorTypeNumLabel) {
+            self.indicatorLabel.text = [NSString stringWithFormat:@"%d/%lu", i, (unsigned long)self.imgArr.count];
+        } else if (self.indicatorType == IndicatorTypePageControl) {
+            self.pageControl.currentPage = i - 1;
+        }
     }
 }
 

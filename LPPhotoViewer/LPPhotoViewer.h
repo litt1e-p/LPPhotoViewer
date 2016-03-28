@@ -8,21 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LPPhotoViewer : UIViewController
+typedef NS_ENUM(NSInteger, IndicatorType)
+{
+    IndicatorTypePageControl,
+    IndicatorTypeNumLabel,
+    IndicatorTypeNone,
+};
 
-@property(nonatomic,strong) NSMutableArray  *imageNameArray;
+@interface LPPhotoViewer : UIViewController
 
 /**
  *  array of UIImage or image urls
  */
-@property(nonatomic, strong) NSMutableArray *imgArr;
-
-@property(nonatomic, strong) UIScrollView *scrollView;
-
-@property(nonatomic, strong) UILabel *indicatorLabel;
-
-@property(nonatomic, strong) UILabel *descLabel;
+@property(nonatomic, strong) NSArray *imgArr;
 
 @property(nonatomic, assign) NSInteger currentIndex;
+
+@property (nonatomic, assign) IndicatorType indicatorType;
 
 @end

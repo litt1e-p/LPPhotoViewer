@@ -143,9 +143,15 @@
 
 - (void)handleTwoFingerTap:(UITapGestureRecognizer *)gestureRecongnizer
 {
-    float newScale  = [_scrollView zoomScale]/2;
+    float newScale  = [_scrollView zoomScale] / 2;
     CGRect zoomRect = [self zoomRectForScale:newScale withCenter:[gestureRecongnizer locationInView:gestureRecongnizer.view]];
     [_scrollView zoomToRect:zoomRect animated:YES];
+}
+
+- (void)zoomReset
+{
+    CGRect zoomRect = [self zoomRectForScale:1.0 withCenter:self.center];
+    [_scrollView zoomToRect:zoomRect animated:NO];
 }
 
 #pragma mark - zoomRectForScale
