@@ -49,7 +49,7 @@
     //image url type
     pvc.imgArr         = self.urlArrays;
 //    pvc.indicatorType = IndicatorTypePageControl;
-//    pvc.indicatorType = IndicatorTypeNumLabel;
+    pvc.indicatorType = IndicatorTypeNumLabel;
 //    pvc.indicatorType = IndicatorTypeNone;
     [self presentViewController:pvc animated:YES completion:nil];
 }

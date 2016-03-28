@@ -78,7 +78,7 @@
     indicatorLabel.backgroundColor = [UIColor clearColor];
     indicatorLabel.textColor       = [UIColor whiteColor];
     indicatorLabel.textAlignment   = NSTextAlignmentCenter;
-    indicatorLabel.text            = [NSString stringWithFormat:@"%ld/%lu", self.currentIndex + 1, (unsigned long)self.imgArr.count];
+    indicatorLabel.text            = [NSString stringWithFormat:@"%zi/%zi", self.currentIndex + 1, self.imgArr.count];
     [self.view addSubview:indicatorLabel];
     self.indicatorLabel            = indicatorLabel;
 }
@@ -126,6 +126,12 @@
             [_subViewList replaceObjectAtIndex:index withObject:photoV];
         }
     }
+    [self.scrollView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:[LPPhotoView class]]) {
+            LPPhotoView *photoView = obj;
+            [photoView zoomReset];
+        }
+    }];
 }
 
 #pragma mark - PhotoViewDelegate
@@ -141,7 +147,7 @@
     if(i >= 1){
         [self loadPhotoWithIndex:i - 1];
         if (self.indicatorType == IndicatorTypeNumLabel) {
-            self.indicatorLabel.text = [NSString stringWithFormat:@"%d/%lu", i, (unsigned long)self.imgArr.count];
+            self.indicatorLabel.text = [NSString stringWithFormat:@"%zi/%zi", i, self.imgArr.count];
         } else if (self.indicatorType == IndicatorTypePageControl) {
             self.pageControl.currentPage = i - 1;
         }
