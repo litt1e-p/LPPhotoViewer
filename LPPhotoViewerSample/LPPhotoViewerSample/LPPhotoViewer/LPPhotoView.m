@@ -148,12 +148,6 @@
     [_scrollView zoomToRect:zoomRect animated:YES];
 }
 
-- (void)zoomReset
-{
-    CGRect zoomRect = [self zoomRectForScale:1.0 withCenter:self.center];
-    [_scrollView zoomToRect:zoomRect animated:NO];
-}
-
 #pragma mark - zoomRectForScale
 - (CGRect)zoomRectForScale:(CGFloat)scale withCenter:(CGPoint)center
 {

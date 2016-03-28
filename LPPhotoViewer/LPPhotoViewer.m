@@ -126,13 +126,6 @@
             [_subViewList replaceObjectAtIndex:index withObject:photoV];
         }
     }
-    [self.scrollView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj isKindOfClass:[LPPhotoView class]]) {
-            LPPhotoView *photoView = obj;
-            [photoView zoomReset];
-        }
-    }];
-    
 }
 
 #pragma mark - PhotoViewDelegate
