@@ -112,16 +112,18 @@
     }
     id currentPhotoView = [_subViewList objectAtIndex:index];
     if (![currentPhotoView isKindOfClass:[LPPhotoView class]]) {
-        CGRect frame = CGRectMake(index*_scrollView.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
+        CGRect frame = CGRectMake(index * _scrollView.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
         id obj       = [self.imgArr objectAtIndex:index];
         if ([obj isKindOfClass:[NSString class]]) {
             LPPhotoView *photoV = [[LPPhotoView alloc] initWithFrame:frame withPhotoUrl:obj];
             photoV.delegate     = self;
+            photoV.disableHorizontalDrag =  (self.imgArr.count > 1);
             [self.scrollView insertSubview:photoV atIndex:0];
             [_subViewList replaceObjectAtIndex:index withObject:photoV];
         } else if ([obj isKindOfClass:[UIImage class]]) {
             LPPhotoView *photoV = [[LPPhotoView alloc] initWithFrame:frame withPhotoImage:obj];
             photoV.delegate     = self;
+            photoV.disableHorizontalDrag =  (self.imgArr.count > 1);
             [self.scrollView insertSubview:photoV atIndex:0];
             [_subViewList replaceObjectAtIndex:index withObject:photoV];
         }
@@ -136,6 +138,11 @@
 
 #pragma mark - PhotoViewDelegate
 - (void)tapHiddenPhotoView
+{
+    [self dragToDismiss];
+}
+
+- (void)dragToDismiss
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }

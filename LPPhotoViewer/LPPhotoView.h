@@ -11,6 +11,7 @@
 @protocol PhotoViewDelegate <NSObject>
 
 - (void)tapHiddenPhotoView;
+- (void)dragToDismiss;
 
 @end
 
@@ -18,6 +19,7 @@
 
 @property(nonatomic, strong) UIImageView *imageView;
 @property(nonatomic, assign) id<PhotoViewDelegate> delegate;
+@property (nonatomic, getter=shouldDisableHorizontalDrag) BOOL disableHorizontalDrag;
 
 - (instancetype)initWithFrame:(CGRect)frame withPhotoUrl:(NSString *)photoUrl;
 - (instancetype)initWithFrame:(CGRect)frame withPhotoImage:(UIImage *)image;
