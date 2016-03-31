@@ -7,14 +7,10 @@
 //
 
 #import "LPPhotoViewer.h"
-#import "UIImageView+WebCache.h"
-#import "MBProgressHUD.h"
 #import "LPPhotoView.h"
 
 @interface LPPhotoViewer () <UIScrollViewDelegate,PhotoViewDelegate>
 {
-    CGFloat lastScale;
-    MBProgressHUD *HUD;
     NSMutableArray *_subViewList;
     CGFloat kScreenWidth;
     CGFloat kScreenHeight;
@@ -40,7 +36,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    lastScale                 = 1.0;
     self.view.backgroundColor = [UIColor blackColor];
     kScreenHeight             = [UIScreen mainScreen].bounds.size.height;
     kScreenWidth              = [UIScreen mainScreen].bounds.size.width;

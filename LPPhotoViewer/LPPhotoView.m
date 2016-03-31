@@ -8,15 +8,15 @@
 
 #import "LPPhotoView.h"
 #import "UIImageView+WebCache.h"
-#import "MBProgressHUD.h"
+#import "DACircularProgressView.h"
 
 @interface LPPhotoView ()<UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
-@property (nonatomic, strong) MBProgressHUD *hud;
 @property (nonatomic, strong) UIScrollView *scrollView;;
 @property (strong, nonatomic) UIDynamicAnimator *animator;
 @property (strong, nonatomic) UIAttachmentBehavior *imgAttatchment;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGr;
+@property (nonatomic, strong) DACircularProgressView *progressView;
 
 @end
 
@@ -33,15 +33,14 @@
         SDWebImageManager *manager = [SDWebImageManager sharedManager];
         BOOL isCached              = [manager cachedImageExistsForURL:[NSURL URLWithString:photoUrl]];
         if (!isCached) {
-            _hud      = [MBProgressHUD showHUDAddedTo:self animated:YES];
-            _hud.mode = MBProgressHUDModeDeterminate;
+            [self addSubview:self.progressView];
         }
         
         [self.imageView sd_setImageWithURL:[NSURL URLWithString:photoUrl] placeholderImage:nil options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
-            _hud.progress = ((float)receivedSize)/expectedSize;
+            [self.progressView setProgress:((float)receivedSize)/expectedSize];
         } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL){
-            if (!isCached) {
-                [_hud hide:YES];
+            if (!isCached || error) {
+                 [self.progressView removeFromSuperview];
             }
         }];
         
@@ -62,7 +61,6 @@
         [self.imageView setImage:image];
         [self.imageView setUserInteractionEnabled:YES];
         [_scrollView addSubview:self.imageView];
-        
         [self sharedGestureInit];
     }
     return self;
@@ -72,13 +70,31 @@
 {
     _scrollView                                = [[UIScrollView alloc] initWithFrame:self.bounds];
     _scrollView.delegate                       = self;
-    _scrollView.minimumZoomScale               = 1;
-    _scrollView.maximumZoomScale               = 3;
     _scrollView.showsHorizontalScrollIndicator = NO;
     _scrollView.showsVerticalScrollIndicator   = NO;
     _scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
     _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self addSubview:_scrollView];
+    
+}
+
+- (void)setMaxMinZoomScalesForCurrentBounds
+{
+    CGSize boundsSize = self.scrollView.bounds.size;
+    CGSize imageSize = self.imageView.frame.size;
+    CGFloat xScale = boundsSize.width / imageSize.width;
+    CGFloat yScale = boundsSize.height / imageSize.height;
+    CGFloat minScale = MIN(xScale, yScale);
+    CGFloat maxScale = 4.0;
+    if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
+        maxScale = maxScale / [[UIScreen mainScreen] scale];
+        if (maxScale < minScale) {
+            maxScale = minScale * 2;
+        }
+    }
+    self.scrollView.maximumZoomScale = maxScale;
+    self.scrollView.minimumZoomScale = minScale;
+    self.scrollView.zoomScale = minScale;
 }
 
 - (void)sharedGestureInit
@@ -86,7 +102,7 @@
     UITapGestureRecognizer *singleTap    = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
     UITapGestureRecognizer *doubleTap    = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
     UITapGestureRecognizer *twoFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTwoFingerTap:)];
-    _panGr = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragEvent:)];
+    _panGr                               = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragEvent:)];
     singleTap.numberOfTapsRequired       = 1;
     singleTap.numberOfTouchesRequired    = 1;
     doubleTap.numberOfTapsRequired       = 2;
@@ -98,9 +114,8 @@
     [self.imageView addGestureRecognizer:_panGr];
     
     [singleTap requireGestureRecognizerToFail:doubleTap];
-    
-    [_scrollView setZoomScale:1];
     self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:_scrollView];
+    [self setMaxMinZoomScalesForCurrentBounds];
 }
 
 - (void)setDisableHorizontalDrag:(BOOL)disableHorizontalDrag
@@ -124,10 +139,30 @@
     return self.imageView;
 }
 
-- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView
 {
-    [scrollView setZoomScale:scale + 0.01 animated:NO];
-    [scrollView setZoomScale:scale animated:NO];
+    [self.animator removeAllBehaviors];
+    [self centerScrollViewContents];
+}
+
+- (void)centerScrollViewContents
+{
+    CGSize boundsSize = self.scrollView.bounds.size;
+    CGRect contentsFrame = self.imageView.frame;
+    
+    if (contentsFrame.size.width < boundsSize.width) {
+        contentsFrame.origin.x = (boundsSize.width - contentsFrame.size.width) / 2.0f;
+    } else {
+        contentsFrame.origin.x = 0.0f;
+    }
+    if (contentsFrame.size.height < boundsSize.height) {
+        contentsFrame.origin.y = (boundsSize.height - contentsFrame.size.height) / 2.0f;
+    } else {
+        contentsFrame.origin.y = 0.0f;
+    }
+    [UIView animateWithDuration:0.25 animations:^{
+        self.imageView.frame = contentsFrame;
+    }];
 }
 
 #pragma mark - tap event
@@ -195,10 +230,9 @@
                 [self dismissNotify];
             });
         } else {
-            [self.animator removeBehavior:self.imgAttatchment];
             [self zoomReset];
             UISnapBehavior *snapBack = [[UISnapBehavior alloc] initWithItem:self.imageView snapToPoint:self.scrollView.center];
-            snapBack.damping = 1.0;
+            snapBack.damping = 0.2;
             [self.animator addBehavior:snapBack];
         }
     }
@@ -206,8 +240,8 @@
 
 - (void)zoomReset
 {
-    CGRect zoomRect = [self zoomRectForScale:self.scrollView.minimumZoomScale withCenter:self.center];
-    [_scrollView zoomToRect:zoomRect animated:NO];
+    CGRect zoomRect = [self zoomRectForScale:self.scrollView.minimumZoomScale withCenter:self.scrollView.center];
+    [_scrollView zoomToRect:zoomRect animated:YES];
 }
 
 #pragma mark - zoomRectForScale
@@ -226,6 +260,23 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(dragToDismiss)]) {
         [self.delegate dragToDismiss];
     }
+}
+
+#pragma mark - lazy loads 📌
+- (DACircularProgressView *)progressView
+{
+    if (!_progressView) {
+        CGFloat screenWidth                  = self.bounds.size.width;
+        CGFloat screenHeight                 = self.bounds.size.height;
+        DACircularProgressView *progressView = [[DACircularProgressView alloc] initWithFrame:CGRectMake((screenWidth-35.)/2., (screenHeight-35.)/2, 35.0f, 35.0f)];
+        [progressView setProgress:0.0f];
+        progressView.thicknessRatio    = 0.1;
+        progressView.roundedCorners    = NO;
+        progressView.trackTintColor    = [UIColor colorWithWhite:0.2 alpha:1];
+        progressView.progressTintColor = [UIColor colorWithWhite:1.0 alpha:1];
+        _progressView                  = progressView;
+    }
+    return _progressView;
 }
 
 @end
