@@ -102,7 +102,7 @@
     UITapGestureRecognizer *singleTap    = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
     UITapGestureRecognizer *doubleTap    = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
     UITapGestureRecognizer *twoFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTwoFingerTap:)];
-    _panGr = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragEvent:)];
+    _panGr                               = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragEvent:)];
     singleTap.numberOfTapsRequired       = 1;
     singleTap.numberOfTouchesRequired    = 1;
     doubleTap.numberOfTapsRequired       = 2;
