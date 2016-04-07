@@ -8,8 +8,9 @@
 
 #import "LPPhotoViewer.h"
 #import "LPPhotoView.h"
+#import "LPPVTransition.h"
 
-@interface LPPhotoViewer () <UIScrollViewDelegate,PhotoViewDelegate>
+@interface LPPhotoViewer () <UIScrollViewDelegate, PhotoViewDelegate, UIViewControllerTransitioningDelegate>
 {
     NSMutableArray *_subViewList;
     CGFloat kScreenWidth;
@@ -24,6 +25,15 @@
 
 @implementation LPPhotoViewer
 
+- (instancetype)init
+{
+    if (self = [super init]) {
+        self.transitioningDelegate = self;
+        self.modalPresentationStyle = UIModalPresentationCustom;
+    }
+    return self;
+}
+
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -36,7 +46,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor blackColor];
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.view.backgroundColor = [UIColor colorWithWhite:0.f alpha:1.f];
     kScreenHeight             = [UIScreen mainScreen].bounds.size.height;
     kScreenWidth              = [UIScreen mainScreen].bounds.size.width;
     
@@ -58,8 +69,6 @@
     self.scrollView.contentSize                    = CGSizeMake(self.imgArr.count * kScreenWidth, kScreenHeight);
     self.scrollView.delegate                       = self;
     self.scrollView.contentOffset                  = CGPointMake(0, 0);
-    self.scrollView.minimumZoomScale               = 1;
-    self.scrollView.maximumZoomScale               = 2;
     [self.view addSubview:self.scrollView];
     
     for (int i = 0; i < self.imgArr.count; i++) {
@@ -142,6 +151,22 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)offsetYForDrag:(CGFloat)offsetY
+{
+    self.view.backgroundColor = [UIColor colorWithWhite:0.f alpha:offsetY];
+}
+
+#pragma mark - transition delegate 📌
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
+{
+    return [LPPVTransition transitionWithTargetVc:self transitionType:LPPVTransitionTypePresent];
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
+{
+    return [LPPVTransition transitionWithTargetVc:self transitionType:LPPVTransitionTypeDismiss];
+}
+
 #pragma mark - UIScrollViewDelegate
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
@@ -154,6 +179,12 @@
             self.pageControl.currentPage = i - 1;
         }
     }
+}
+
+#pragma mark - showFromViewController 📌
+- (void)showFromViewController:(UIViewController *)vc sender:(id)sender
+{
+    [vc presentViewController:self animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning

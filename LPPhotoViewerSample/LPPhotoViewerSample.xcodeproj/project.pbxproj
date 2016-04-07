@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0404FF841CB3C2A800C29B73 /* LPPVTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 0404FF831CB3C2A800C29B73 /* LPPVTransition.m */; };
 		042B606B1CA67057008E8790 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 042B606A1CA67057008E8790 /* main.m */; };
 		042B606E1CA67057008E8790 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 042B606D1CA67057008E8790 /* AppDelegate.m */; };
 		042B60711CA67057008E8790 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042B60701CA67057008E8790 /* ViewController.m */; };
@@ -22,6 +23,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0404FF821CB3C2A800C29B73 /* LPPVTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPPVTransition.h; sourceTree = "<group>"; };
+		0404FF831CB3C2A800C29B73 /* LPPVTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPPVTransition.m; sourceTree = "<group>"; };
 		042B60661CA67057008E8790 /* LPPhotoViewerSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LPPhotoViewerSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		042B606A1CA67057008E8790 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		042B606C1CA67057008E8790 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -107,6 +110,8 @@
 				042B60921CA78CA2008E8790 /* LPPhotoView.m */,
 				042B60941CA78F3E008E8790 /* LPPhotoViewer.h */,
 				042B60951CA78F3E008E8790 /* LPPhotoViewer.m */,
+				0404FF821CB3C2A800C29B73 /* LPPVTransition.h */,
+				0404FF831CB3C2A800C29B73 /* LPPVTransition.m */,
 			);
 			path = LPPhotoViewer;
 			sourceTree = "<group>";
@@ -267,6 +272,7 @@
 				042B60931CA78CA2008E8790 /* LPPhotoView.m in Sources */,
 				042B606E1CA67057008E8790 /* AppDelegate.m in Sources */,
 				042B60961CA78F3E008E8790 /* LPPhotoViewer.m in Sources */,
+				0404FF841CB3C2A800C29B73 /* LPPVTransition.m in Sources */,
 				042B606B1CA67057008E8790 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

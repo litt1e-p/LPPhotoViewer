@@ -13,8 +13,8 @@
 @interface LPPhotoView ()<UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIScrollView *scrollView;;
-@property (strong, nonatomic) UIDynamicAnimator *animator;
-@property (strong, nonatomic) UIAttachmentBehavior *imgAttatchment;
+@property (nonatomic, strong) UIDynamicAnimator *animator;
+@property (nonatomic, strong) UIAttachmentBehavior *imgAttatchment;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGr;
 @property (nonatomic, strong) DACircularProgressView *progressView;
 
@@ -81,11 +81,11 @@
 - (void)setMaxMinZoomScalesForCurrentBounds
 {
     CGSize boundsSize = self.scrollView.bounds.size;
-    CGSize imageSize = self.imageView.frame.size;
-    CGFloat xScale = boundsSize.width / imageSize.width;
-    CGFloat yScale = boundsSize.height / imageSize.height;
-    CGFloat minScale = MIN(xScale, yScale);
-    CGFloat maxScale = 4.0;
+    CGSize imageSize  = self.imageView.frame.size;
+    CGFloat xScale    = boundsSize.width / imageSize.width;
+    CGFloat yScale    = boundsSize.height / imageSize.height;
+    CGFloat minScale  = MIN(xScale, yScale);
+    CGFloat maxScale  = 4.0;
     if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
         maxScale = maxScale / [[UIScreen mainScreen] scale];
         if (maxScale < minScale) {
@@ -147,7 +147,7 @@
 
 - (void)centerScrollViewContents
 {
-    CGSize boundsSize = self.scrollView.bounds.size;
+    CGSize boundsSize    = self.scrollView.bounds.size;
     CGRect contentsFrame = self.imageView.frame;
     
     if (contentsFrame.size.width < boundsSize.width) {
@@ -176,12 +176,12 @@
 - (void)handleDoubleTap:(UITapGestureRecognizer *)gestureRecognizer
 {
     if (gestureRecognizer.numberOfTapsRequired == 2) {
-        if(_scrollView.zoomScale == 1){
-            float newScale  = [_scrollView zoomScale] * 2;
+        if(_scrollView.zoomScale == _scrollView.minimumZoomScale){
+            float newScale  = _scrollView.maximumZoomScale;
             CGRect zoomRect = [self zoomRectForScale:newScale withCenter:[gestureRecognizer locationInView:gestureRecognizer.view]];
             [_scrollView zoomToRect:zoomRect animated:YES];
         }else{
-            float newScale  = [_scrollView zoomScale] / 2;
+            float newScale  = _scrollView.minimumZoomScale;
             CGRect zoomRect = [self zoomRectForScale:newScale withCenter:[gestureRecognizer locationInView:gestureRecognizer.view]];
             [_scrollView zoomToRect:zoomRect animated:YES];
         }
@@ -209,7 +209,10 @@
         self.imgAttatchment = [[UIAttachmentBehavior alloc] initWithItem:self.imageView offsetFromCenter:centerOffset attachedToAnchor:location];
         [self.animator addBehavior:self.imgAttatchment];
     } else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        [self.imgAttatchment setAnchorPoint:[recognizer locationInView:self.scrollView]];
+        CGPoint ancPoint = [recognizer locationInView:self.scrollView];
+        [self.imgAttatchment setAnchorPoint:ancPoint];
+        CGFloat halfH = self.scrollView.bounds.size.height * 0.5f;
+        [self offsetDragNofify: 1.f - fabs(ancPoint.y - halfH) / halfH];
     } else if (recognizer.state == UIGestureRecognizerStateEnded) {
         CGPoint location = [recognizer locationInView:self.scrollView];
         CGRect closeTopThreshhold = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height * .25);
@@ -228,12 +231,14 @@
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self dismissNotify];
+                [self offsetDragNofify: 0.f];
             });
         } else {
             [self zoomReset];
             UISnapBehavior *snapBack = [[UISnapBehavior alloc] initWithItem:self.imageView snapToPoint:self.scrollView.center];
             snapBack.damping = 0.2;
             [self.animator addBehavior:snapBack];
+            [self offsetDragNofify: 1.f];
         }
     }
 }
@@ -248,8 +253,8 @@
 - (CGRect)zoomRectForScale:(CGFloat)scale withCenter:(CGPoint)center
 {
     CGRect zoomRect;
-    zoomRect.size.height = [_scrollView frame].size.height / scale;
-    zoomRect.size.width  = [_scrollView frame].size.width / scale;
+    zoomRect.size.height = _scrollView.frame.size.height / scale;
+    zoomRect.size.width  = _scrollView.frame.size.width / scale;
     zoomRect.origin.x    = center.x - zoomRect.size.width / 2;
     zoomRect.origin.y    = center.y - zoomRect.size.height / 2;
     return zoomRect;
@@ -262,7 +267,14 @@
     }
 }
 
-#pragma mark - lazy loads 📌
+- (void)offsetDragNofify:(CGFloat)offsetY
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(offsetYForDrag:)]) {
+        [self.delegate offsetYForDrag:offsetY];
+    }
+}
+
+#pragma mark - lazy loads 
 - (DACircularProgressView *)progressView
 {
     if (!_progressView) {

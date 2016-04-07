@@ -12,6 +12,8 @@
 
 - (void)tapHiddenPhotoView;
 - (void)dragToDismiss;
+@optional
+- (void)offsetYForDrag:(CGFloat)offsetY;
 
 @end
 
