@@ -26,4 +26,6 @@ typedef NS_ENUM(NSInteger, IndicatorType)
 
 @property (nonatomic, assign) IndicatorType indicatorType;
 
+- (void)showFromViewController:(UIViewController *)vc sender:(id)sender;
+
 @end
