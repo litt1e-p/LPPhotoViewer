@@ -6,7 +6,7 @@ Installation
 
 - use cocoapods
 ```swift
-pod 'LPPhotoViewer', '~> 0.0.5'
+pod 'LPPhotoViewer', '~> 0.0.6'
 ```
 - manual import
 ```swift
@@ -53,11 +53,13 @@ pvc.indicatorType = IndicatorTypeNumLabel;
 
 # Screenshot
 
-<img src="screenshot1.gif" width="320">
-
-<img src="screenshot2.gif" width="320">
+<img src="screenshot1.gif" width="320"> <img src="screenshot2.gif" width="320">
 
 # Release notes
+
+- 0.0.6
+
+`add fade in transition effect & fade out drag effect`
 
 - 0.0.5
 
