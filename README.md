@@ -2,7 +2,7 @@
 
 a simple photo browser 
 
-Installation
+# Installation
 
 - use cocoapods
 ```swift
@@ -13,7 +13,7 @@ pod 'LPPhotoViewer', '~> 0.0.6'
 just download lib folder and add into your project
 ```
 
-Usage
+# Usage
 
 - initialize imgae url array or UIImage objs
 ```swift
@@ -57,26 +57,20 @@ pvc.indicatorType = IndicatorTypeNumLabel;
 
 # Release notes
 
-- 0.0.6
-
+#### Ver. 0.0.6 
 `add fade in transition effect & fade out drag effect`
 
-- 0.0.5
-
+#### Ver. 0.0.5
 `new progress view & drag bugfix`
 
-- 0.0.4
-
+#### Ver. 0.0.4
 `add vertical drag gesture for dismiss`
 
-- 0.0.3
-
+#### Ver. 0.0.3
 `add zoom reset fix`
 
-- 0.0.2
-
+#### Ver. 0.0.2
 `add pageControl indicate type`
 
-- 0.0.1
-
+#### Ver. 0.0.1
 `first commit`
