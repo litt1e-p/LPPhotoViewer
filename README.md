@@ -53,7 +53,9 @@ pvc.indicatorType = IndicatorTypeNumLabel;
 
 # Screenshot
 
-<img src="screenshot.gif" width="320">
+<img src="screenshot1.gif" width="320">
+
+<img src="screenshot2.gif" width="320">
 
 # Release notes
 
