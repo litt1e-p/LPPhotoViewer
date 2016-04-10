@@ -57,20 +57,20 @@ pvc.indicatorType = IndicatorTypeNumLabel;
 
 # Release notes
 
-#### Ver. 0.0.6 
+#### ver. 0.0.6 
 `add fade in transition effect & fade out drag effect`
 
-#### Ver. 0.0.5
+#### ver. 0.0.5
 `new progress view & drag bugfix`
 
-#### Ver. 0.0.4
+#### ver. 0.0.4
 `add vertical drag gesture for dismiss`
 
-#### Ver. 0.0.3
+#### ver. 0.0.3
 `add zoom reset fix`
 
-#### Ver. 0.0.2
+#### ver. 0.0.2
 `add pageControl indicate type`
 
-#### Ver. 0.0.1
+#### ver. 0.0.1
 `first commit`
