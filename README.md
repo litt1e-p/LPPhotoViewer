@@ -55,6 +55,10 @@ pvc.indicatorType = IndicatorTypeNumLabel;
 
 <img src="screenshot1.gif" width="320"> <img src="screenshot2.gif" width="320">
 
+# Notice
+
+`LPPhotoViewer will upgrade to 1.x which will be much better performance soon`
+
 # Release notes
 
 #### ver. 0.0.6 
