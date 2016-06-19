@@ -57,7 +57,7 @@ pvc.indicatorType = IndicatorTypeNumLabel;
 
 # Notice
 
-`LPPhotoViewer will upgrade to 1.x which will be much better performance soon`
+`LPPhotoViewer will upgrade to 1.x & Swift3 which will be much better performance soon`
 
 # Release notes
 
