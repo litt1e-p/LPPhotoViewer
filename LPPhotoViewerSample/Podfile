@@ -5,7 +5,7 @@
 
 target 'LPPhotoViewerSample' do
 
-pod 'SDWebImage', '~> 3.7.5'
+pod 'SDWebImage', '~> 3.8'
 pod 'DACircularProgress', '~> 2.3.1'
 
 end
