@@ -6,7 +6,7 @@ a simple photo browser
 
 - use cocoapods
 ```swift
-pod 'LPPhotoViewer', '~> 0.0.6'
+pod 'LPPhotoViewer', '~> 0.0.7'
 ```
 - manual import
 ```swift
