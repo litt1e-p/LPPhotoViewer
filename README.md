@@ -61,6 +61,9 @@ pvc.indicatorType = IndicatorTypeNumLabel;
 
 # Release notes
 
+#### ver. 0.0.7
+`update lib dependencies`
+
 #### ver. 0.0.6 
 `add fade in transition effect & fade out drag effect`
 
