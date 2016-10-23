@@ -4,7 +4,7 @@ a simple photo browser
 
 # Additional
 
-Objective C version is [here](https://github.com/litt1e-p/LPPhotoViewer-swift)
+Swift version is [here](https://github.com/litt1e-p/LPPhotoViewer-swift)
 
 # Installation
 
