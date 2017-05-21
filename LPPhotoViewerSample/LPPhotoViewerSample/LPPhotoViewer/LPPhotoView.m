@@ -31,18 +31,31 @@
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
         
         SDWebImageManager *manager = [SDWebImageManager sharedManager];
-        BOOL isCached              = [manager cachedImageExistsForURL:[NSURL URLWithString:photoUrl]];
-        if (!isCached) {
-            [self addSubview:self.progressView];
-        }
-        
-        [self.imageView sd_setImageWithURL:[NSURL URLWithString:photoUrl] placeholderImage:nil options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
-            [self.progressView setProgress:((float)receivedSize)/expectedSize];
-        } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL){
-            if (!isCached || error) {
-                 [self.progressView removeFromSuperview];
+        __block BOOL isCached = YES;
+        [manager cachedImageExistsForURL:[NSURL URLWithString:photoUrl] completion:^(BOOL isInCache) {
+            if (!isInCache) {
+                [self addSubview:self.progressView];
+                isCached = NO;
             }
         }];
+        [self.imageView sd_setImageWithURL:[NSURL URLWithString:photoUrl] placeholderImage:nil options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+            [self.progressView setProgress:((float)receivedSize)/expectedSize];
+        } completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+            if (!isCached || error) {
+                [self.progressView removeFromSuperview];
+            }
+        }];
+//        BOOL isCached              = [manager cachedImageExistsForURL:[NSURL URLWithString:photoUrl]];
+//        if (!isCached) {
+//            [self addSubview:self.progressView];
+//        }
+//        [self.imageView sd_setImageWithURL:[NSURL URLWithString:photoUrl] placeholderImage:nil options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
+//            [self.progressView setProgress:((float)receivedSize)/expectedSize];
+//        } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL){
+//            if (!isCached || error) {
+//                 [self.progressView removeFromSuperview];
+//            }
+//        }];
         
         [self.imageView setUserInteractionEnabled:YES];
         [_scrollView addSubview:self.imageView];
