@@ -10,7 +10,7 @@ Swift version is [here](https://github.com/litt1e-p/LPPhotoViewer-swift)
 
 - use cocoapods
 ```swift
-pod 'LPPhotoViewer', '~> 0.0.7'
+pod 'LPPhotoViewer', '~> 0.1.0'
 ```
 - manual import
 ```swift
@@ -64,6 +64,9 @@ pvc.indicatorType = IndicatorTypeNumLabel;
 `LPPhotoViewer will upgrade to 1.x & Swift3 which will be much better performance soon`
 
 # Release notes
+
+#### ver. 0.1.0
+`update dependency of SDWebImage`
 
 #### ver. 0.0.7
 `update lib dependencies`
