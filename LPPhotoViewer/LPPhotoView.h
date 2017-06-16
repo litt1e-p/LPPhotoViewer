@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <FLAnimatedImageView+WebCache.h>
 
 @protocol PhotoViewDelegate <NSObject>
 
@@ -19,7 +20,7 @@
 
 @interface LPPhotoView : UIView
 
-@property(nonatomic, strong) UIImageView *imageView;
+@property(nonatomic, strong) FLAnimatedImageView *imageView;
 @property(nonatomic, assign) id<PhotoViewDelegate> delegate;
 @property (nonatomic, getter=shouldDisableHorizontalDrag) BOOL disableHorizontalDrag;
 
