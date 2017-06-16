@@ -31,6 +31,7 @@
     
     self.urlArrays  = [[NSMutableArray alloc] init];
     self.imgArrays  = [[NSMutableArray alloc] init];
+    [self.urlArrays addObject:@"http://www.ratoo.net/uploads/allimg/130330/7-130330200347.gif"];
     [self.urlArrays addObject:@"https://drscdn.500px.org/photo/146512755/q=80_m=2000_k=1/62c584ed280fb11bbdb7d1c5451b6676"];
     [self.urlArrays addObject:@"https://drscdn.500px.org/photo/85567631/q%3D85_w%3D560_s%3D1/86ec6bbfc690723af5f2e40d8c832956"];
     [self.urlArrays addObject:@"https://drscdn.500px.org/photo/146441995/q=80_m=2000/0a6e687c0750ea05abf709bbd8c3d7f8"];

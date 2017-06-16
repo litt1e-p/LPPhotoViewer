@@ -27,7 +27,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self sharedScrollViewInit];
-        self.imageView             = [[UIImageView alloc] initWithFrame:self.bounds];
+        self.imageView             = [[FLAnimatedImageView alloc] initWithFrame:self.bounds];
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
         
         SDWebImageManager *manager = [SDWebImageManager sharedManager];
@@ -45,6 +45,9 @@
                 [self.progressView removeFromSuperview];
             }
         }];
+        if ([photoUrl hasSuffix:@".gif"]) {
+            [self.imageView startAnimating];
+        }
 //        BOOL isCached              = [manager cachedImageExistsForURL:[NSURL URLWithString:photoUrl]];
 //        if (!isCached) {
 //            [self addSubview:self.progressView];

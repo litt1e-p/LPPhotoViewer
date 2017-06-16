@@ -6,6 +6,7 @@
 target 'LPPhotoViewerSample' do
 
 pod 'SDWebImage', '~> 4'
+pod 'SDWebImage/GIF', '~> 4'
 pod 'DACircularProgress', '~> 2.3.1'
 
 end

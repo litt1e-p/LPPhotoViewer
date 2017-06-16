@@ -1,17 +1,23 @@
 PODS:
   - DACircularProgress (2.3.1)
+  - FLAnimatedImage (1.0.12)
   - SDWebImage (4.0.0):
     - SDWebImage/Core (= 4.0.0)
   - SDWebImage/Core (4.0.0)
+  - SDWebImage/GIF (4.0.0):
+    - FLAnimatedImage (~> 1.0)
+    - SDWebImage/Core
 
 DEPENDENCIES:
   - DACircularProgress (~> 2.3.1)
   - SDWebImage (~> 4)
+  - SDWebImage/GIF (~> 4)
 
 SPEC CHECKSUMS:
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
+  FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
 
-PODFILE CHECKSUM: 432a2f460fbeb4622f74ad842e5d85437381e75e
+PODFILE CHECKSUM: 2f880cb15a7e9cba6bf95ea10e23ec52e64b6c6e
 
 COCOAPODS: 1.1.0.rc.2
