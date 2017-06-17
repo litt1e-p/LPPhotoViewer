@@ -9,6 +9,7 @@
 #import "LPPhotoView.h"
 #import "UIImageView+WebCache.h"
 #import "DACircularProgressView.h"
+#import "FLAnimatedImageView+WebCache.h"
 
 @interface LPPhotoView ()<UIScrollViewDelegate, UIGestureRecognizerDelegate>
 

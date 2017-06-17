@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FLAnimatedImageView+WebCache.h"
 
+@class FLAnimatedImageView;
 @protocol PhotoViewDelegate <NSObject>
 
 - (void)tapHiddenPhotoView;
