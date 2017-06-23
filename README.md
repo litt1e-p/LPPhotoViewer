@@ -10,7 +10,7 @@ Swift version is [here](https://github.com/litt1e-p/LPPhotoViewer-swift)
 
 - use cocoapods
 ```swift
-pod 'LPPhotoViewer', '~> 0.1.0'
+pod 'LPPhotoViewer', '~> 0.1.1'
 ```
 - manual import
 ```swift
