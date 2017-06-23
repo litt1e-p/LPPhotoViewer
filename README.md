@@ -65,6 +65,9 @@ pvc.indicatorType = IndicatorTypeNumLabel;
 
 # Release notes
 
+#### ver. 0.1.1
+`gif image support`
+
 #### ver. 0.1.0
 `update dependency of SDWebImage`
 
