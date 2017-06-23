@@ -1,6 +1,6 @@
 # LPPhotoViewer
 
-a simple photo browser 
+a simple photo browser (gif support)
 
 # Additional
 
