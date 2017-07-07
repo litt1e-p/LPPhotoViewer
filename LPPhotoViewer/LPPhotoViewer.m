@@ -43,6 +43,12 @@
     return self;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self setPicCurrentIndex:self.currentIndex];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -57,7 +63,6 @@
     } else if (self.indicatorType == IndicatorTypePageControl) {
         [self addPageControl];
     }
-    [self setPicCurrentIndex:self.currentIndex];
 }
 
 - (void)initScrollView
@@ -104,6 +109,7 @@
 {
     _currentIndex                 = currentIndex;
     self.scrollView.contentOffset = CGPointMake(kScreenWidth * currentIndex, 0);
+    [self updateIndicatorAt:currentIndex];
     [self loadPhotoWithIndex:_currentIndex];
     [self loadPhotoWithIndex:_currentIndex + 1];
     [self loadPhotoWithIndex:_currentIndex - 1];
@@ -113,6 +119,9 @@
 {
     if (index < 0 || index >= self.imgArr.count) {
         return;
+    }
+    if (self.delegate && [self.delegate respondsToSelector:@selector(photoViewWillShow:)]) {
+        [self.delegate photoViewWillShow:index];
     }
     id currentPhotoView = [_subViewList objectAtIndex:index];
     if (![currentPhotoView isKindOfClass:[LPPhotoView class]]) {
@@ -148,6 +157,10 @@
 
 - (void)dragToDismiss
 {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(photoViewWillClose:)]) {
+        int i = self.scrollView.contentOffset.x / kScreenWidth + 1;
+        [self.delegate photoViewWillClose:i - 1];
+    }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -173,11 +186,16 @@
     int i = scrollView.contentOffset.x / kScreenWidth + 1;
     if(i >= 1){
         [self loadPhotoWithIndex:i - 1];
-        if (self.indicatorType == IndicatorTypeNumLabel) {
-            self.indicatorLabel.text = [NSString stringWithFormat:@"%zi/%zi", i, self.imgArr.count];
-        } else if (self.indicatorType == IndicatorTypePageControl) {
-            self.pageControl.currentPage = i - 1;
-        }
+        [self updateIndicatorAt:i - 1];
+    }
+}
+
+- (void)updateIndicatorAt:(NSInteger)index
+{
+    if (self.indicatorType == IndicatorTypeNumLabel) {
+        self.indicatorLabel.text = [NSString stringWithFormat:@"%zi/%zi", index + 1, self.imgArr.count];
+    } else if (self.indicatorType == IndicatorTypePageControl) {
+        self.pageControl.currentPage = index;
     }
 }
 

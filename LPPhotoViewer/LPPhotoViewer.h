@@ -8,12 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
+@class LPPhotoView;
+
 typedef NS_ENUM(NSInteger, IndicatorType)
 {
     IndicatorTypePageControl,
     IndicatorTypeNumLabel,
     IndicatorTypeNone,
 };
+
+@protocol LPPhotoViewerDelegate <NSObject>
+
+@optional
+- (void)photoViewWillShow:(NSUInteger)fromIndex;
+- (void)photoViewWillClose:(NSUInteger)fromIndex;
+
+@end
 
 @interface LPPhotoViewer : UIViewController
 
@@ -25,6 +35,8 @@ typedef NS_ENUM(NSInteger, IndicatorType)
 @property(nonatomic, assign) NSInteger currentIndex;
 
 @property (nonatomic, assign) IndicatorType indicatorType;
+
+@property (nonatomic, weak) id <LPPhotoViewerDelegate>delegate;
 
 - (void)showFromViewController:(UIViewController *)vc sender:(id)sender;
 
