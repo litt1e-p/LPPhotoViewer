@@ -73,7 +73,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self sharedScrollViewInit];
-        self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        self.imageView = [[FLAnimatedImageView alloc] initWithFrame:self.bounds];
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [self.imageView setImage:image];
         [self.imageView setUserInteractionEnabled:YES];
@@ -89,8 +89,8 @@
     _scrollView.delegate                       = self;
     _scrollView.showsHorizontalScrollIndicator = NO;
     _scrollView.showsVerticalScrollIndicator   = NO;
-    _scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
-    _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _scrollView.decelerationRate               = UIScrollViewDecelerationRateFast;
+    _scrollView.autoresizingMask               = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self addSubview:_scrollView];
     
 }
