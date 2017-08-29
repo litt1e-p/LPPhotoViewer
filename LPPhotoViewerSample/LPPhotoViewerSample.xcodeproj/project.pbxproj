@@ -19,6 +19,7 @@
 		042B609A1CA7A4B4008E8790 /* carousel01.png in Resources */ = {isa = PBXBuildFile; fileRef = 042B60971CA7A4B4008E8790 /* carousel01.png */; };
 		042B609B1CA7A4B4008E8790 /* carousel02.png in Resources */ = {isa = PBXBuildFile; fileRef = 042B60981CA7A4B4008E8790 /* carousel02.png */; };
 		042B609C1CA7A4B4008E8790 /* carousel03.png in Resources */ = {isa = PBXBuildFile; fileRef = 042B60991CA7A4B4008E8790 /* carousel03.png */; };
+		04E19BD01F55655500BB7B2B /* UIView+Indicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E19BCF1F55655500BB7B2B /* UIView+Indicator.m */; };
 		C44582BFCF905B88D4454C02 /* libPods-LPPhotoViewerSample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 110BAE846F582B1BF4893DB7 /* libPods-LPPhotoViewerSample.a */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +43,8 @@
 		042B60971CA7A4B4008E8790 /* carousel01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = carousel01.png; sourceTree = "<group>"; };
 		042B60981CA7A4B4008E8790 /* carousel02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = carousel02.png; sourceTree = "<group>"; };
 		042B60991CA7A4B4008E8790 /* carousel03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = carousel03.png; sourceTree = "<group>"; };
+		04E19BCE1F55655500BB7B2B /* UIView+Indicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Indicator.h"; sourceTree = "<group>"; };
+		04E19BCF1F55655500BB7B2B /* UIView+Indicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Indicator.m"; sourceTree = "<group>"; };
 		110BAE846F582B1BF4893DB7 /* libPods-LPPhotoViewerSample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LPPhotoViewerSample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8600B25AF85B1BB64978FEB7 /* Pods-LPPhotoViewerSample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LPPhotoViewerSample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LPPhotoViewerSample/Pods-LPPhotoViewerSample.debug.xcconfig"; sourceTree = "<group>"; };
 		8B9F452CA107F3D624273375 /* Pods-LPPhotoViewerSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LPPhotoViewerSample.release.xcconfig"; path = "Pods/Target Support Files/Pods-LPPhotoViewerSample/Pods-LPPhotoViewerSample.release.xcconfig"; sourceTree = "<group>"; };
@@ -112,6 +115,8 @@
 				042B60951CA78F3E008E8790 /* LPPhotoViewer.m */,
 				0404FF821CB3C2A800C29B73 /* LPPVTransition.h */,
 				0404FF831CB3C2A800C29B73 /* LPPVTransition.m */,
+				04E19BCE1F55655500BB7B2B /* UIView+Indicator.h */,
+				04E19BCF1F55655500BB7B2B /* UIView+Indicator.m */,
 			);
 			path = LPPhotoViewer;
 			sourceTree = "<group>";
@@ -222,13 +227,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-LPPhotoViewerSample-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A3DB935C08DEBDC3D8D697D8 /* [CP] Embed Pods Frameworks */ = {
@@ -268,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04E19BD01F55655500BB7B2B /* UIView+Indicator.m in Sources */,
 				042B60711CA67057008E8790 /* ViewController.m in Sources */,
 				042B60931CA78CA2008E8790 /* LPPhotoView.m in Sources */,
 				042B606E1CA67057008E8790 /* AppDelegate.m in Sources */,

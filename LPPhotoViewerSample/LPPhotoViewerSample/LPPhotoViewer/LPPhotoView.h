@@ -22,7 +22,6 @@
 
 #import <UIKit/UIKit.h>
 
-@class FLAnimatedImageView;
 @protocol PhotoViewDelegate <NSObject>
 
 - (void)tapHiddenPhotoView;
@@ -34,7 +33,7 @@
 
 @interface LPPhotoView : UIView
 
-@property(nonatomic, strong) FLAnimatedImageView *imageView;
+@property(nonatomic, strong) UIImageView *imageView;
 @property(nonatomic, assign) id<PhotoViewDelegate> delegate;
 @property (nonatomic, getter=shouldDisableHorizontalDrag) BOOL disableHorizontalDrag;
 
