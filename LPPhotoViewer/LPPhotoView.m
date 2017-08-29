@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 #import "LPPhotoView.h"
-#import "FLAnimatedImageView+WebCache.h"
-#import "UIView+WebCache.h"
+#import "YYWebImage.h"
+#import "UIView+Indicator.h"
 
 @interface LPPhotoView ()<UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
@@ -51,7 +51,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self sharedScrollViewInit];
-        self.imageView = [[FLAnimatedImageView alloc] initWithFrame:self.bounds];
+        self.imageView = [[YYAnimatedImageView alloc] initWithFrame:self.bounds];
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [self.imageView setImage:image];
         [self.imageView setUserInteractionEnabled:YES];
@@ -86,15 +86,13 @@
 - (void)sharedImageViewInit:(NSURL *)photoUrl
 {
     NSAssert([photoUrl isKindOfClass:[NSURL class]], @"type of photoUrl must be NSURL or URL");
-    self.imageView             = [[FLAnimatedImageView alloc] initWithFrame:self.bounds];
+    self.imageView             = [[YYAnimatedImageView alloc] initWithFrame:self.bounds];
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [self.imageView sd_setShowActivityIndicatorView:YES];
-    [self.imageView sd_setIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    [self.imageView sd_setImageWithURL:photoUrl placeholderImage:nil options:0 completed:nil];
-    
-    if ([photoUrl.absoluteString hasSuffix:@".gif"]) {
-        [self.imageView startAnimating];
-    }
+    [self.imageView lp_setShowActivityIndicatorView:YES];
+    [self.imageView lp_setIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    [self.imageView yy_setImageWithURL:photoUrl placeholder:nil options:YYWebImageOptionProgressiveBlur|YYWebImageOptionSetImageWithFadeAnimation progress:nil transform:nil completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, YYWebImageFromType from, YYWebImageStage stage, NSError * _Nullable error) {
+        [self.imageView lp_removeActivityIndicator];
+    }];
     [self.imageView setUserInteractionEnabled:YES];
     [_scrollView addSubview:self.imageView];
 }

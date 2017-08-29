@@ -23,6 +23,7 @@
 #import "LPPhotoViewer.h"
 #import "LPPhotoView.h"
 #import "LPPVTransition.h"
+#import "YYWebImage.h"
 
 @interface LPPhotoViewer () <UIScrollViewDelegate, PhotoViewDelegate, UIViewControllerTransitioningDelegate>
 {
@@ -61,6 +62,12 @@
 {
     [super viewWillAppear:animated];
     [self setPicCurrentIndex:self.currentIndex];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[YYWebImageManager sharedManager].cache.memoryCache removeAllObjects];
 }
 
 - (void)viewDidLoad

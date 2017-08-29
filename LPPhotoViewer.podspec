@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "LPPhotoViewer"
-  s.version          = "0.2.0"
+  s.version          = "0.2.1"
   s.summary          = "a simple photo browser"
   s.description      = <<-DESC
                        a simple photo browser with custom-built transition efftect
@@ -12,7 +12,6 @@ Pod::Spec.new do |s|
   s.platform = :ios, '7.0'
   s.requires_arc = true
   s.source_files = 'LPPhotoViewer/*'
-  s.dependency 'SDWebImage', '~> 4.0.0'
-  s.dependency 'SDWebImage/GIF', '~> 4'
+  s.dependency 'YYWebImage'
   s.frameworks = 'Foundation', 'UIKit'
 end
