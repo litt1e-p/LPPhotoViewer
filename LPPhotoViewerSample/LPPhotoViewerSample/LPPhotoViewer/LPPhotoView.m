@@ -1,15 +1,28 @@
+// The MIT License (MIT)
 //
-//  LPPhotoView.m
-//  LPPhotoViewer
+// Copyright (c) 2017-2018 litt1e-p ( https://github.com/litt1e-p )
 //
-//  Created by litt1e-p on 16/3/27.
-//  Copyright © 2016年 litt1e-p. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 #import "LPPhotoView.h"
-#import "UIImageView+WebCache.h"
-#import "DACircularProgressView.h"
 #import "FLAnimatedImageView+WebCache.h"
+#import "UIView+WebCache.h"
 
 @interface LPPhotoView ()<UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
@@ -17,52 +30,17 @@
 @property (nonatomic, strong) UIDynamicAnimator *animator;
 @property (nonatomic, strong) UIAttachmentBehavior *imgAttatchment;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGr;
-@property (nonatomic, strong) DACircularProgressView *progressView;
 
 @end
 
 @implementation LPPhotoView
 
-- (instancetype)initWithFrame:(CGRect)frame withPhotoUrl:(NSString *)photoUrl
+- (instancetype)initWithFrame:(CGRect)frame withPhotoUrl:(NSURL *)photoUrl
 {
     self = [super initWithFrame:frame];
     if (self) {
         [self sharedScrollViewInit];
-        self.imageView             = [[FLAnimatedImageView alloc] initWithFrame:self.bounds];
-        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        
-        SDWebImageManager *manager = [SDWebImageManager sharedManager];
-        __block BOOL isCached = YES;
-        [manager cachedImageExistsForURL:[NSURL URLWithString:photoUrl] completion:^(BOOL isInCache) {
-            if (!isInCache) {
-                [self addSubview:self.progressView];
-                isCached = NO;
-            }
-        }];
-        [self.imageView sd_setImageWithURL:[NSURL URLWithString:photoUrl] placeholderImage:nil options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
-            [self.progressView setProgress:((float)receivedSize)/expectedSize];
-        } completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-            if (!isCached || error) {
-                [self.progressView removeFromSuperview];
-            }
-        }];
-        if ([photoUrl hasSuffix:@".gif"]) {
-            [self.imageView startAnimating];
-        }
-//        BOOL isCached              = [manager cachedImageExistsForURL:[NSURL URLWithString:photoUrl]];
-//        if (!isCached) {
-//            [self addSubview:self.progressView];
-//        }
-//        [self.imageView sd_setImageWithURL:[NSURL URLWithString:photoUrl] placeholderImage:nil options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize){
-//            [self.progressView setProgress:((float)receivedSize)/expectedSize];
-//        } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL){
-//            if (!isCached || error) {
-//                 [self.progressView removeFromSuperview];
-//            }
-//        }];
-        
-        [self.imageView setUserInteractionEnabled:YES];
-        [_scrollView addSubview:self.imageView];
+        [self sharedImageViewInit:photoUrl];
         [self sharedGestureInit];
     }
     return self;
@@ -83,6 +61,17 @@
     return self;
 }
 
+- (instancetype)initWithFrame:(CGRect)frame withPhotoUrlStr:(NSString *)photoUrlStr
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self sharedScrollViewInit];
+        [self sharedImageViewInit:[NSURL URLWithString:photoUrlStr]];
+        [self sharedGestureInit];
+    }
+    return self;
+}
+
 - (void)sharedScrollViewInit
 {
     _scrollView                                = [[UIScrollView alloc] initWithFrame:self.bounds];
@@ -92,7 +81,22 @@
     _scrollView.decelerationRate               = UIScrollViewDecelerationRateFast;
     _scrollView.autoresizingMask               = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self addSubview:_scrollView];
+}
+
+- (void)sharedImageViewInit:(NSURL *)photoUrl
+{
+    NSAssert([photoUrl isKindOfClass:[NSURL class]], @"type of photoUrl must be NSURL or URL");
+    self.imageView             = [[FLAnimatedImageView alloc] initWithFrame:self.bounds];
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [self.imageView sd_setShowActivityIndicatorView:YES];
+    [self.imageView sd_setIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    [self.imageView sd_setImageWithURL:photoUrl placeholderImage:nil options:0 completed:nil];
     
+    if ([photoUrl.absoluteString hasSuffix:@".gif"]) {
+        [self.imageView startAnimating];
+    }
+    [self.imageView setUserInteractionEnabled:YES];
+    [_scrollView addSubview:self.imageView];
 }
 
 - (void)setMaxMinZoomScalesForCurrentBounds
@@ -289,23 +293,6 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(offsetYForDrag:)]) {
         [self.delegate offsetYForDrag:offsetY];
     }
-}
-
-#pragma mark - lazy loads 
-- (DACircularProgressView *)progressView
-{
-    if (!_progressView) {
-        CGFloat screenWidth                  = self.bounds.size.width;
-        CGFloat screenHeight                 = self.bounds.size.height;
-        DACircularProgressView *progressView = [[DACircularProgressView alloc] initWithFrame:CGRectMake((screenWidth-35.)/2., (screenHeight-35.)/2, 35.0f, 35.0f)];
-        [progressView setProgress:0.0f];
-        progressView.thicknessRatio    = 0.1;
-        progressView.roundedCorners    = NO;
-        progressView.trackTintColor    = [UIColor colorWithWhite:0.2 alpha:1];
-        progressView.progressTintColor = [UIColor colorWithWhite:1.0 alpha:1];
-        _progressView                  = progressView;
-    }
-    return _progressView;
 }
 
 @end
