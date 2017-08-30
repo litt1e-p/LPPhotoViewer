@@ -64,9 +64,21 @@
     [self setPicCurrentIndex:self.currentIndex];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+-(void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
+    [self clearImageCache];
+}
+
+-(void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    [self clearImageCache];
+    [self reducePhotoSubViewsIfNeed];
+}
+
+-(void)clearImageCache
+{
     [[YYWebImageManager sharedManager].cache.memoryCache removeAllObjects];
 }
 
@@ -84,6 +96,8 @@
     } else if (self.indicatorType == IndicatorTypePageControl) {
         [self addPageControl];
     }
+    [YYWebImageManager sharedManager].cache.memoryCache.costLimit = 80 * 1024 * 1024;
+    [YYWebImageManager sharedManager].cache.diskCache.costLimit = 500 * 1024 * 1024;
 }
 
 - (void)initScrollView
@@ -152,26 +166,60 @@
             LPPhotoView *photoV = [[LPPhotoView alloc] initWithFrame:frame withPhotoUrlStr:obj];
             photoV.delegate     = self;
             photoV.disableHorizontalDrag =  (self.imgArr.count > 1);
+            photoV.tag = index;
             [self.scrollView insertSubview:photoV atIndex:0];
             [_subViewList replaceObjectAtIndex:index withObject:photoV];
         } else if ([obj isKindOfClass:[UIImage class]]) {
             LPPhotoView *photoV = [[LPPhotoView alloc] initWithFrame:frame withPhotoImage:obj];
             photoV.delegate     = self;
             photoV.disableHorizontalDrag =  (self.imgArr.count > 1);
+            photoV.tag = index;
             [self.scrollView insertSubview:photoV atIndex:0];
             [_subViewList replaceObjectAtIndex:index withObject:photoV];
         } else if ([obj isKindOfClass:[NSURL class]]) {
             LPPhotoView *photoV = [[LPPhotoView alloc] initWithFrame:frame withPhotoUrl:obj];
             photoV.delegate     = self;
             photoV.disableHorizontalDrag =  (self.imgArr.count > 1);
+            photoV.tag = index;
             [self.scrollView insertSubview:photoV atIndex:0];
             [_subViewList replaceObjectAtIndex:index withObject:photoV];
+        } else {
+            NSAssert(YES, @"unsupport type of photoViewer");
         }
+    } else {
+        [currentPhotoView resumeImageLoadWithPhoto:[self.imgArr objectAtIndex:index]];
     }
     [self.scrollView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([obj isKindOfClass:[LPPhotoView class]]) {
             LPPhotoView *photoView = obj;
             [photoView zoomReset];
+        }
+    }];
+//    [self reducePhotoSubViewsIfNeed];
+}
+
+- (void)reducePhotoSubViewsIfNeed
+{
+    NSMutableArray *targetTags = [NSMutableArray array];
+    NSUInteger index = self.scrollView.contentOffset.x / kScreenWidth + 1;
+    [_subViewList enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:[LPPhotoView class]]) {
+            LPPhotoView *view = (LPPhotoView *)obj;
+            NSUInteger position = abs(index - idx);
+            if (position > 10) {
+                [targetTags addObject:@(view.tag)];
+            }
+        }
+    }];
+    [self.scrollView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:[LPPhotoView class]]) {
+            LPPhotoView *view = (LPPhotoView *)obj;
+            [targetTags enumerateObjectsUsingBlock:^(id  _Nonnull tag, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSInteger t = [tag integerValue];
+                if (view.tag == t) {
+                    [view cancelImageLoad];
+                }
+            }];
         }
     }];
 }
@@ -230,11 +278,6 @@
 - (void)showFromViewController:(UIViewController *)vc sender:(id)sender
 {
     [vc presentViewController:self animated:YES completion:nil];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
 }
 
 @end

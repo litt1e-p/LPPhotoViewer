@@ -41,5 +41,7 @@
 - (instancetype)initWithFrame:(CGRect)frame withPhotoImage:(UIImage *)image;
 - (instancetype)initWithFrame:(CGRect)frame withPhotoUrl:(NSURL *)photoUrl;
 - (void)zoomReset;
+- (void)cancelImageLoad;
+- (void)resumeImageLoadWithPhoto:(id)photo;
 
 @end

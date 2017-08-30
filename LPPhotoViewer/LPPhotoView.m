@@ -86,15 +86,44 @@
 - (void)sharedImageViewInit:(NSURL *)photoUrl
 {
     NSAssert([photoUrl isKindOfClass:[NSURL class]], @"type of photoUrl must be NSURL or URL");
+    [[YYWebImageManager sharedManager].cache.memoryCache removeAllObjects];
     self.imageView             = [[YYAnimatedImageView alloc] initWithFrame:self.bounds];
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [self loadImage:photoUrl];
+    [self.imageView setUserInteractionEnabled:YES];
+    [_scrollView addSubview:self.imageView];
+}
+
+- (void)loadImage:(NSURL *)photoUrl
+{
     [self.imageView lp_setShowActivityIndicatorView:YES];
     [self.imageView lp_setIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     [self.imageView yy_setImageWithURL:photoUrl placeholder:nil options:YYWebImageOptionProgressiveBlur|YYWebImageOptionSetImageWithFadeAnimation progress:nil transform:nil completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, YYWebImageFromType from, YYWebImageStage stage, NSError * _Nullable error) {
+        if (from == YYWebImageFromDiskCache) {
+//            NSLog(@"from disk");
+        }
         [self.imageView lp_removeActivityIndicator];
     }];
-    [self.imageView setUserInteractionEnabled:YES];
-    [_scrollView addSubview:self.imageView];
+}
+
+- (void)cancelImageLoad
+{
+    [self.imageView yy_cancelCurrentImageRequest];
+    self.imageView.image = nil;
+}
+
+- (void)resumeImageLoadWithPhoto:(id)photo
+{
+    if (self.imageView.image) {
+        return;
+    }
+    if ([photo isKindOfClass:[NSString class]]) {
+        [self loadImage:[NSURL URLWithString:photo]];
+    } else if ([photo isKindOfClass:[NSURL class]]) {
+        [self loadImage:photo];
+    } else if ([photo isKindOfClass:[UIImage class]]) {
+        self.imageView.image = photo;
+    }
 }
 
 - (void)setMaxMinZoomScalesForCurrentBounds
