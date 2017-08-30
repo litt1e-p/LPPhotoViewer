@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "LPPhotoViewer"
-  s.version          = "0.2.1"
+  s.version          = "0.2.2"
   s.summary          = "a simple photo browser"
   s.description      = <<-DESC
                        a simple photo browser with custom-built transition efftect
