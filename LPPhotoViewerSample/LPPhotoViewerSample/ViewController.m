@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "LPPhotoViewer.h"
 
-@interface ViewController ()
+@interface ViewController ()<LPPhotoViewerDelegate>
 
 @property (nonatomic, strong) NSMutableArray *urlStrArrays;
 @property (nonatomic, strong) NSMutableArray *urlArrays;
@@ -63,6 +63,7 @@
     LPPhotoViewer *pvc = [[LPPhotoViewer alloc] init];
     
     pvc.currentIndex = index;
+    pvc.delegate = self;
     
     //UIImage type
 //    pvc.imgArr = self.imgArrays;
@@ -79,6 +80,12 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - LPPhotoViewerDelegate
+- (void)photoViewDidLongPress:(id)image
+{
+    NSLog(@"%@", image);
 }
 
 @end
