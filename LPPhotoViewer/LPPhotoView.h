@@ -28,6 +28,7 @@
 - (void)dragToDismiss;
 @optional
 - (void)offsetYForDrag:(CGFloat)offsetY;
+- (void)photoWithLongPress:(id)image;
 
 @end
 

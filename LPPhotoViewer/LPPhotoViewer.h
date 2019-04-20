@@ -36,6 +36,7 @@ typedef NS_ENUM(NSInteger, IndicatorType)
 @optional
 - (void)photoViewWillShow:(NSUInteger)fromIndex;
 - (void)photoViewWillClose:(NSUInteger)fromIndex;
+- (void)photoViewDidLongPress:(id)image;
 
 @end
 

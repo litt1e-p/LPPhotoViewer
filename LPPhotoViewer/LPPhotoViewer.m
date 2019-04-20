@@ -205,7 +205,7 @@
     [_subViewList enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([obj isKindOfClass:[LPPhotoView class]]) {
             LPPhotoView *view = (LPPhotoView *)obj;
-            NSUInteger position = abs(index - idx);
+            NSUInteger position = (index - idx);
             if (position > 10) {
                 [targetTags addObject:@(view.tag)];
             }
@@ -242,6 +242,13 @@
 - (void)offsetYForDrag:(CGFloat)offsetY
 {
     self.view.backgroundColor = [UIColor colorWithWhite:0.f alpha:offsetY];
+}
+
+- (void)photoWithLongPress:(UIImage *)image
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(photoViewDidLongPress:)]) {
+        [self.delegate photoViewDidLongPress:image];
+    }
 }
 
 #pragma mark - transition delegate 📌

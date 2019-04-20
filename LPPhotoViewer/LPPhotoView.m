@@ -133,7 +133,7 @@
     CGFloat xScale    = boundsSize.width / imageSize.width;
     CGFloat yScale    = boundsSize.height / imageSize.height;
     CGFloat minScale  = MIN(xScale, yScale);
-    CGFloat maxScale  = 4.0;
+    CGFloat maxScale  = 16.0;
     if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
         maxScale = maxScale / [[UIScreen mainScreen] scale];
         if (maxScale < minScale) {
@@ -150,16 +150,19 @@
     UITapGestureRecognizer *singleTap    = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
     UITapGestureRecognizer *doubleTap    = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
     UITapGestureRecognizer *twoFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTwoFingerTap:)];
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
     _panGr                               = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragEvent:)];
     singleTap.numberOfTapsRequired       = 1;
     singleTap.numberOfTouchesRequired    = 1;
     doubleTap.numberOfTapsRequired       = 2;
     twoFingerTap.numberOfTouchesRequired = 2;
+    longPress.numberOfTouchesRequired    = 1;
     
     [self.imageView addGestureRecognizer:singleTap];
     [self.imageView addGestureRecognizer:doubleTap];
     [self.imageView addGestureRecognizer:twoFingerTap];
     [self.imageView addGestureRecognizer:_panGr];
+    [self.imageView addGestureRecognizer:longPress];
     
     [singleTap requireGestureRecognizerToFail:doubleTap];
     self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:_scrollView];
@@ -241,6 +244,21 @@
     float newScale  = [_scrollView zoomScale] / 2;
     CGRect zoomRect = [self zoomRectForScale:newScale withCenter:[gestureRecongnizer locationInView:gestureRecongnizer.view]];
     [_scrollView zoomToRect:zoomRect animated:YES];
+}
+
+- (void)handleLongPress: (UILongPressGestureRecognizer *)gestureRecongnizer
+{
+    if (gestureRecongnizer.state != UIGestureRecognizerStateEnded) {
+        return;
+    }
+    if (self.delegate && [self.delegate respondsToSelector:@selector(photoWithLongPress:)] && self.imageView.image) {
+        id imageItem = [self.imageView.image yy_imageDataRepresentation];
+        YYImageType type = YYImageDetectType((__bridge CFDataRef)(imageItem));
+        if (type != YYImageTypePNG && type != YYImageTypeJPEG && type != YYImageTypeGIF) {
+            imageItem = self.imageView.image;
+        }
+        [self.delegate photoWithLongPress:imageItem];
+    }
 }
 
 #pragma mark - dragEvent
